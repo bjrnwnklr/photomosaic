@@ -3,6 +3,17 @@ import argparse
 import pathlib
 
 
+def img_to_squares(im, sq_size=50):
+    """Divide the input image into squares. The squares parameter defines the size in pixels of the squares
+    e.g. 100 = break image into squares of 100x100 size."""
+    # get size of the image
+    width, height = im.size
+    # calculate how many squares in the image, cut off the last remaining one on the right and bottom
+    row_squares = height // sq_size
+    col_squares = width // sq_size
+    print(f"Image has {col_squares} * {row_squares} squares of size {sq_size}")
+
+
 def main():
     """The main method"""
 
@@ -29,6 +40,9 @@ def main():
     # print image information
     im = Image.open(im_name)
     print(im.format, im.size, im.mode)
+
+    # cut into squares
+    img_to_squares(im, 50)
 
 
 if __name__ == "__main__":
