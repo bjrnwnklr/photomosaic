@@ -28,6 +28,17 @@ def rotate_image(im):
     return im.rotate(angle=angle, expand=True)
 
 
+def crop_image(im: Image.Image, size):
+    """Crop an image to the specified size.
+    Cropping is done by cropping the middle of the image by fitting the crop
+    box into the middle of the image"""
+    # calculate top left of middle section of image
+    top = int((im.size[0] - size[0]) / 2)
+    left = int((im.size[1] - size[1]) / 2)
+
+    return im.crop((top, left, top + size[0], left + size[1]))
+
+
 def create_thumbnail(im_path: pathlib.Path, size, folder):
     """Generate a thumbnail with dimensions size and store in folder"""
     # load the image from the provided path
@@ -35,6 +46,7 @@ def create_thumbnail(im_path: pathlib.Path, size, folder):
     # rotate the image if required
     im = rotate_image(im)
     thumb = ImageOps.cover(im, size)
+    thumb = crop_image(thumb, size)
     img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
     print(f"Saving thumbnail {img_name}")
     thumb.save(img_name)
