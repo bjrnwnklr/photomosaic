@@ -3,7 +3,7 @@ import argparse
 import pathlib
 
 
-def img_to_squares(im, sq_size=50):
+def img_to_squares(im: Image, sq_size=50):
     """Divide the input image into squares. The squares parameter defines the size in pixels of the squares
     e.g. 100 = break image into squares of 100x100 size."""
     # get size of the image
@@ -12,6 +12,40 @@ def img_to_squares(im, sq_size=50):
     row_squares = height // sq_size
     col_squares = width // sq_size
     print(f"Image has {col_squares} * {row_squares} squares of size {sq_size}")
+
+    # break into squares using the Image.crop function
+    squares = []
+    for r in range(row_squares):
+        row = []
+        for c in range(col_squares):
+            square = im.crop(
+                (c * sq_size, r * sq_size, (c + 1) * sq_size, (r + 1) * sq_size)
+            )
+            row.append(square)
+            color = avg_color(square)
+            print(f"Square [{r}, {c}]: {square.size}. Avg color: {color}")
+        squares.append(row)
+
+
+def avg_color(im: Image) -> tuple[int]:
+    """Calculate the average color (in an RGB tuple) of a p
+    provided image.
+
+    Args:
+        im (Image): Input image
+
+    Returns:
+        tuple[int]: RGB color tuple
+    """
+    # get the individual pixels by color band
+    R = list(im.getdata(0))
+    R_avg = int(sum(R) / len(R))
+    G = list(im.getdata(1))
+    G_avg = int(sum(G) / len(G))
+    B = list(im.getdata(2))
+    B_avg = int(sum(B) / len(B))
+
+    return (R_avg, G_avg, B_avg)
 
 
 def main():
