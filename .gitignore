@@ -1,6 +1,9 @@
 # secret files
 secrets.sh
 
+# tmp folder
+tmp/
+
 # vscode config
 .vscode/
 
