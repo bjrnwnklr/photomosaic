@@ -1,6 +1,7 @@
 from PIL import Image
 import argparse
 import pathlib
+import sys
 
 
 def img_to_squares(im: Image.Image, sq_size=50):
