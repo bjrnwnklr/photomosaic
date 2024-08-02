@@ -12,6 +12,18 @@ A simple photo mosaic generator, based on the ideas from [robertheaton.com - pro
 6. For each section of the input image, find the source image with the closest average color
 7. Paste each of these source images into the output image in the appropriate location. You have a photomosaic!
 
+## Ideas
+
+-   Create cache for the average color - use a JSON file that stores the file name, date processed and average color
+-   Create a more efficient way of finding the nearest average color. Ideas:
+    -   split the color room into cubes and store the cube of each image's average color in the JSON cache file
+    -   this will make it easier to locate images that are close in average color to the source image
+    -   Possibly use overlapping cubes (e.g. cube size 50, overlap every 25 steps):
+    ```
+        |---------|--------|
+              |--------|
+    ```
+
 # EXIF tags
 
 [EXIF Tags](https://exiftool.org/TagNames/EXIF.html)

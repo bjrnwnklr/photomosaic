@@ -22,6 +22,7 @@ def main():
     parser.add_argument(
         "-s", "--size", help="Size of the (square) thumbnails.", type=int, default=300
     )
+    # TODO: add a --recursive argument to recursively parse image folders
 
     args = parser.parse_args()
 
