@@ -1,15 +1,14 @@
 from PIL import Image
-import argparse
-import pathlib
-import sys
 
 
 def img_to_squares(im: Image.Image, sq_size=50):
-    """Divide the input image into squares. The squares parameter defines the size in pixels of the squares
+    """Divide the input image into squares. The squares parameter defines
+    the size in pixels of the squares
     e.g. 100 = break image into squares of 100x100 size."""
     # get size of the image
     width, height = im.size
-    # calculate how many squares in the image, cut off the last remaining one on the right and bottom
+    # calculate how many squares in the image, cut off the last remaining one on
+    # the right and bottom
     row_squares = height // sq_size
     col_squares = width // sq_size
     print(f"Image has {col_squares} * {row_squares} squares of size {sq_size}")
@@ -60,7 +59,8 @@ def avg_color(im: Image.Image) -> tuple[int]:
 def generate_avg_color_image(
     squares: list[list[Image.Image]],
 ) -> list[list[Image.Image]]:
-    """Generate a new two dimensional list of squares, each square with the average color
+    """Generate a new two dimensional list of squares, each square with
+    the average color
     of the original list of squares."""
     new_squares = []
     for row in squares:
@@ -96,52 +96,3 @@ def patch_image(squares: list[list[Image.Image]]) -> Image.Image:
         height += sq.size[1]
 
     return im
-
-
-def main():
-    """The main method"""
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "image",
-        nargs="?",
-        help="the image to convert",
-        default="cat.jpg",
-        type=pathlib.Path,
-    )
-    # TODO: add option to resize by entering width and height arguments (or just one?)
-    size = (120, 80)
-
-    args = parser.parse_args()
-
-    # check if image exists, exit if not
-    im_name = args.image
-    path = pathlib.Path(im_name)
-    if not path.exists():
-        print(f"File does not exist: {im_name}")
-        sys.exit(-1)
-
-    # print image information
-    im = Image.open(im_name)
-    print(im.format, im.size, im.mode)
-
-    # cut into squares
-    length = 50
-    print("Generating squares from original image")
-    squares = img_to_squares(im, length)
-    # generate a new image with the dimensions of the squares
-    print("Generating avg color squares from original squares")
-    new_squares = generate_avg_color_image(squares)
-    print(f"New avg square, first square: {new_squares[0][0].size}")
-
-    # patch the new image together
-    print("Patching new image together from avg color squares")
-    new_im = patch_image(new_squares)
-    # save new image
-    print("Saving new image")
-    tmp_name = "tmp/tmp.jpg"
-    new_im.save(tmp_name)
-
-
-if __name__ == "__main__":
-    main()
