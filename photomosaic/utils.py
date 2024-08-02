@@ -92,7 +92,9 @@ def patch_image(squares: list[list[Image.Image]]) -> Image.Image:
     for row in squares:
         width = 0
         for sq in row:
-            im.paste(sq, (width, height))
+            print(f"Patching square into image at {width}, {height}")
+            tmp_im = sq.load()
+            im.paste(tmp_im, (width, height))
             width += sq.size[0]
         height += sq.size[1]
 

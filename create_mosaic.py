@@ -25,7 +25,7 @@ def find_color_neighbor(im: Image.Image, cache_dict: dict) -> str:
     # TODO: find a smarter way of searching through the cache
     min_dist = 1_000
     # set a default random image from the cache in case nothing is found
-    min_thumb = random.choice(cache_dict)
+    min_thumb = random.choice(list(cache_dict.keys()))
     threshold = 10
     for k, v in cache_dict.items():
         dist = color_distance(src_avg_RGB, v["RGB_avg"])
@@ -37,7 +37,7 @@ def find_color_neighbor(im: Image.Image, cache_dict: dict) -> str:
             print(f"Found a close enough match: {min_dist}, {min_thumb}")
             break
 
-    print("Found neighbor: {min_dist}, {min_thumb}")
+    print(f"Found neighbor: {min_dist}, {min_thumb}")
     return min_thumb
 
 
@@ -113,17 +113,34 @@ def main():
 
     # Generate an updated list of squares with the thumbnails as squares.
     # process each square, get average color, retrieve nearest thumbnail from cache
+    thumb_squares = []
     for row in squares:
         new_row = []
         for sq in row:
             # retrieve nearest image name with the closest color from cache
             neighbor = find_color_neighbor(sq, cache_dict)
-            neighbor_im = Image.load()
+            # construct path of thumbnail to load
+            thumb_path = pathlib.Path(f"{folder}/{neighbor}")
+            if not thumb_path.exists():
+                print(f"Thumbnail does not exit in image cache: {thumb_path}")
+                sys.exit(1)
+            with open(thumb_path, "rb") as thumb_in:
+                neighbor_im = Image.open(thumb_in)
+                # create new temp image
+                tmp_im = Image.new("RGB", size=neighbor_im.size)
+                tmp_im.paste(neighbor_im)
+                new_row.append(tmp_im)
+        thumb_squares.append(new_row)
+
+    print(f"Thumbnails collected: {len(thumb_squares) * len(thumb_squares[0])}")
+
+    # generate new image from thumbnails
+    mosaic_im = patch_image(thumb_squares)
 
     # save new image
-    # tmp_name = f"tmp/{path.stem}_pixelated_{size}{path.suffix}"
-    # print(f"Saving new image: {tmp_name}")
-    # pixelated_im.save(tmp_name)
+    mosaic_name = f"tmp/{path.stem}_mosaic_{size}{path.suffix}"
+    print(f"Saving new image: {mosaic_name}")
+    mosaic_im.save(mosaic_name)
 
 
 if __name__ == "__main__":
