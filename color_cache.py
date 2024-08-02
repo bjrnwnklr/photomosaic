@@ -85,9 +85,13 @@ def main():
         f"Cache completed, processed {processed_images} files."
         + f" Total files in cache {len(cache_dict)}"
     )
-    print(f"Storing cache in: {cache_path}")
-    with open(cache_path, "w") as f_out:
-        json.dump(cache_obj, f_out)
+    # write file back if any changes were done
+    if processed_images > 0:
+        print(f"Storing cache in: {cache_path}")
+        with open(cache_path, "w") as f_out:
+            json.dump(cache_obj, f_out)
+    else:
+        print("No changes processed - cache file not updated on disk.")
 
 
 if __name__ == "__main__":
