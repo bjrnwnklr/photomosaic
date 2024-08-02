@@ -1,4 +1,5 @@
-from PIL import Image
+from PIL import Image, ImageOps
+import pathlib
 
 
 def img_to_squares(im: Image.Image, sq_size=50):
@@ -114,3 +115,51 @@ def pixelate(im: Image.Image, size: int) -> Image.Image:
     new_im = patch_image(new_squares)
 
     return new_im
+
+
+def rotate_image(im):
+    """Rotate an image according to the rotation stored in the images Exif data
+    1 = Horizontal (normal)
+    2 = Mirror horizontal
+    3 = Rotate 180
+    4 = Mirror vertical
+    5 = Mirror horizontal and rotate 270 CW
+    6 = Rotate 90 CW
+    7 = Mirror horizontal and rotate 90 CW
+    8 = Rotate 270 CW
+    """
+    # get rotation from EXIF
+    rotation = im.getexif()[274]
+    if rotation == 3:
+        angle = 180
+    elif rotation == 6:
+        angle = 270
+    elif rotation == 8:
+        angle = 90
+    else:
+        angle = 0
+    return im.rotate(angle=angle, expand=True)
+
+
+def crop_image(im: Image.Image, size):
+    """Crop an image to the specified size.
+    Cropping is done by cropping the middle of the image by fitting the crop
+    box into the middle of the image"""
+    # calculate top left of middle section of image
+    top = int((im.size[0] - size[0]) / 2)
+    left = int((im.size[1] - size[1]) / 2)
+
+    return im.crop((top, left, top + size[0], left + size[1]))
+
+
+def create_thumbnail(im_path: pathlib.Path, size, folder):
+    """Generate a thumbnail with dimensions size and store in folder"""
+    # load the image from the provided path
+    im = Image.open(im_path)
+    # rotate the image if required
+    im = rotate_image(im)
+    thumb = ImageOps.cover(im, size)
+    thumb = crop_image(thumb, size)
+    img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
+    print(f"Saving thumbnail {img_name}")
+    thumb.save(img_name)

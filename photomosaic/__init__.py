@@ -3,4 +3,5 @@ from photomosaic.utils import (
     generate_avg_color_image,
     patch_image,
     pixelate,
+    create_thumbnail,
 )

@@ -2,7 +2,7 @@ from PIL import Image
 import argparse
 import pathlib
 import sys
-from photomosaic import img_to_squares, generate_avg_color_image, patch_image, pixelate
+from photomosaic import pixelate
 
 
 def main():
