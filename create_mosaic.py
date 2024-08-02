@@ -26,7 +26,7 @@ def find_color_neighbor(im: Image.Image, cache_dict: dict) -> str:
     min_dist = 1_000
     # set a default random image from the cache in case nothing is found
     min_thumb = random.choice(list(cache_dict.keys()))
-    threshold = 10
+    threshold = 4
     for k, v in cache_dict.items():
         dist = color_distance(src_avg_RGB, v["RGB_avg"])
         if dist < min_dist:
@@ -124,12 +124,7 @@ def main():
             if not thumb_path.exists():
                 print(f"Thumbnail does not exit in image cache: {thumb_path}")
                 sys.exit(1)
-            with open(thumb_path, "rb") as thumb_in:
-                neighbor_im = Image.open(thumb_in)
-                # create new temp image
-                tmp_im = Image.new("RGB", size=neighbor_im.size)
-                tmp_im.paste(neighbor_im)
-                new_row.append(tmp_im)
+            new_row.append(thumb_path)
         thumb_squares.append(new_row)
 
     print(f"Thumbnails collected: {len(thumb_squares) * len(thumb_squares[0])}")

@@ -73,7 +73,7 @@ def generate_avg_color_image(
     return new_squares
 
 
-def patch_image(squares: list[list[Image.Image]]) -> Image.Image:
+def patch_image_orig(squares: list[list[Image.Image]]) -> Image.Image:
     """Generate a new image from the provided two dimensional list of squares.
 
     Assumption is that each square has the same size."""
@@ -97,6 +97,39 @@ def patch_image(squares: list[list[Image.Image]]) -> Image.Image:
             im.paste(tmp_im, (width, height))
             width += sq.size[0]
         height += sq.size[1]
+
+    return im
+
+
+def patch_image(squares: list[list[str]]) -> Image.Image:
+    """Generate a new image from the provided two dimensional list of squares.
+    Loads the images from the filenames provided.
+
+    Assumption is that each square has the same size."""
+    # load the first thumbnail to calculate the size
+    sq0 = squares[0][0]
+    with open(sq0, "rb") as thumb_f:
+        sq0_im = Image.open(thumb_f)
+        # assume each image in the row has the same height, and each
+        # image in a column has the same height. Use the first image of
+        width = len(squares[0]) * sq0_im.size[0]
+        height = len(squares) * sq0_im.size[1]
+        print(f"Calculated size of new image: {width} x {height}")
+
+    # create new image
+    im = Image.new("RGB", (width, height))
+    print(f"New image dimensions: {im.size}")
+    # patch the image together
+    print("Patching new image together from squares")
+    height = 0
+    for row in squares:
+        width = 0
+        for sq in row:
+            print(f"Patching square into image at {width}, {height}")
+            tmp_im = Image.open(sq)
+            im.paste(tmp_im, (width, height))
+            width += tmp_im.size[0]
+        height += tmp_im.size[1]
 
     return im
 
