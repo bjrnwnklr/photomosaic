@@ -96,3 +96,21 @@ def patch_image(squares: list[list[Image.Image]]) -> Image.Image:
         height += sq.size[1]
 
     return im
+
+
+def pixelate(im: Image.Image, size: int) -> Image.Image:
+    """Convenience function: cut an image into squares of size and
+    generate a new image with average color of the squares. Return
+    the new image."""
+    print("Generating squares from original image")
+    squares = img_to_squares(im, size)
+    # generate a new image with the dimensions of the squares
+    print("Generating avg color squares from original squares")
+    new_squares = generate_avg_color_image(squares)
+    print(f"New avg square, first square: {new_squares[0][0].size}")
+
+    # patch the new image together
+    print("Patching new image together from avg color squares")
+    new_im = patch_image(new_squares)
+
+    return new_im
