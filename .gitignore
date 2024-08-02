@@ -4,6 +4,7 @@ secrets.sh
 # tmp folder
 tmp/
 img_cache/
+cache.json
 
 # vscode config
 .vscode/

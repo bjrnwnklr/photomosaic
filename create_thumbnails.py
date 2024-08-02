@@ -40,7 +40,7 @@ def main():
     print(f"Found {len(source_images)} images in folder {path}")
 
     folder = "img_cache"
-    for src_img in source_images[:3]:
+    for src_img in source_images:
         create_thumbnail(pathlib.Path(src_img), size, folder)
 
 
