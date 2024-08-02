@@ -117,7 +117,7 @@ def pixelate(im: Image.Image, size: int) -> Image.Image:
     return new_im
 
 
-def rotate_image(im):
+def rotate_image(im: Image.Image) -> Image.Image:
     """Rotate an image according to the rotation stored in the images Exif data
     1 = Horizontal (normal)
     2 = Mirror horizontal
@@ -141,7 +141,7 @@ def rotate_image(im):
     return im.rotate(angle=angle, expand=True)
 
 
-def crop_image(im: Image.Image, size):
+def crop_image(im: Image.Image, size: int) -> Image.Image:
     """Crop an image to the specified size.
     Cropping is done by cropping the middle of the image by fitting the crop
     box into the middle of the image"""
@@ -152,14 +152,21 @@ def crop_image(im: Image.Image, size):
     return im.crop((top, left, top + size[0], left + size[1]))
 
 
-def create_thumbnail(im_path: pathlib.Path, size, folder):
+def create_thumbnail(im_path: pathlib.Path, size: int, folder: str):
     """Generate a thumbnail with dimensions size and store in folder"""
     # load the image from the provided path
     im = Image.open(im_path)
     # rotate the image if required
     im = rotate_image(im)
+    # create the thumbnail. This will create an image with the smallest
+    # size as provided size
+    # e.g. size = 300, image is 4000 x 3000, new image will be 400 x 300
     thumb = ImageOps.cover(im, size)
+    # crop the image to the specified size in the middle of the provided image
+    # new image will be 300 x 300, the previously longer side is cut to
+    # 300 and centered in the previous 400 side (cut is from 50 to 350)
     thumb = crop_image(thumb, size)
+    # save in folder with 'thumb' prefix
     img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
     print(f"Saving thumbnail {img_name}")
     thumb.save(img_name)
