@@ -2,43 +2,8 @@ from PIL import Image
 import argparse
 import pathlib
 import sys
-from photomosaic import img_to_squares, patch_image, avg_color
+from photomosaic import img_to_squares, patch_image_from_files, find_color_neighbor
 import json
-import math
-import random
-
-
-def color_distance(a_RGB: tuple[int, int, int], b_RGB: tuple[int, int, int]) -> int:
-    """Return an integer value of the pythagorean distance of the two RGB tuples
-    from each other."""
-    dist = 0
-    for a, b in zip(a_RGB, b_RGB):
-        dist += (a - b) ** 2
-    return math.sqrt(dist)
-
-
-def find_color_neighbor(im: Image.Image, cache_dict: dict) -> str:
-    """Find the nearest image from the image cache that is close to the average
-    RGB of the provided image."""
-    src_avg_RGB = avg_color(im)
-    print(f"Searching for color match for average color {src_avg_RGB}")
-    # TODO: find a smarter way of searching through the cache
-    min_dist = 1_000
-    # set a default random image from the cache in case nothing is found
-    min_thumb = random.choice(list(cache_dict.keys()))
-    threshold = 4
-    for k, v in cache_dict.items():
-        dist = color_distance(src_avg_RGB, v["RGB_avg"])
-        if dist < min_dist:
-            min_dist = dist
-            min_thumb = k
-        # stop searching if we found a close enough match
-        if min_dist <= threshold:
-            print(f"Found a close enough match: {min_dist}, {min_thumb}")
-            break
-
-    print(f"Found neighbor: {min_dist}, {min_thumb}")
-    return min_thumb
 
 
 def main():
@@ -130,7 +95,7 @@ def main():
     print(f"Thumbnails collected: {len(thumb_squares) * len(thumb_squares[0])}")
 
     # generate new image from thumbnails
-    mosaic_im = patch_image(thumb_squares)
+    mosaic_im = patch_image_from_files(thumb_squares)
 
     # save new image
     mosaic_name = f"tmp/{path.stem}_mosaic_{size}{path.suffix}"

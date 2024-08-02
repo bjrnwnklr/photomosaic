@@ -1,5 +1,7 @@
 from PIL import Image, ImageOps
 import pathlib
+import math
+import random
 
 
 def img_to_squares(im: Image.Image, sq_size=50):
@@ -73,7 +75,7 @@ def generate_avg_color_image(
     return new_squares
 
 
-def patch_image_orig(squares: list[list[Image.Image]]) -> Image.Image:
+def patch_image_from_images(squares: list[list[Image.Image]]) -> Image.Image:
     """Generate a new image from the provided two dimensional list of squares.
 
     Assumption is that each square has the same size."""
@@ -92,16 +94,14 @@ def patch_image_orig(squares: list[list[Image.Image]]) -> Image.Image:
     for row in squares:
         width = 0
         for sq in row:
-            print(f"Patching square into image at {width}, {height}")
-            tmp_im = sq.load()
-            im.paste(tmp_im, (width, height))
+            im.paste(sq, (width, height))
             width += sq.size[0]
         height += sq.size[1]
 
     return im
 
 
-def patch_image(squares: list[list[str]]) -> Image.Image:
+def patch_image_from_files(squares: list[list[str]]) -> Image.Image:
     """Generate a new image from the provided two dimensional list of squares.
     Loads the images from the filenames provided.
 
@@ -125,7 +125,6 @@ def patch_image(squares: list[list[str]]) -> Image.Image:
     for row in squares:
         width = 0
         for sq in row:
-            print(f"Patching square into image at {width}, {height}")
             tmp_im = Image.open(sq)
             im.paste(tmp_im, (width, height))
             width += tmp_im.size[0]
@@ -147,7 +146,7 @@ def pixelate(im: Image.Image, size: int) -> Image.Image:
 
     # patch the new image together
     print("Patching new image together from avg color squares")
-    new_im = patch_image(new_squares)
+    new_im = patch_image_from_images(new_squares)
 
     return new_im
 
@@ -205,3 +204,33 @@ def create_thumbnail(im_path: pathlib.Path, size: int, folder: str):
     img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
     print(f"Saving thumbnail {img_name}")
     thumb.save(img_name)
+
+
+def color_distance(a_RGB: tuple[int, int, int], b_RGB: tuple[int, int, int]) -> int:
+    """Return an integer value of the pythagorean distance of the two RGB tuples
+    from each other."""
+    dist = 0
+    for a, b in zip(a_RGB, b_RGB):
+        dist += (a - b) ** 2
+    return math.sqrt(dist)
+
+
+def find_color_neighbor(im: Image.Image, cache_dict: dict) -> str:
+    """Find the nearest image from the image cache that is close to the average
+    RGB of the provided image."""
+    src_avg_RGB = avg_color(im)
+    # TODO: find a smarter way of searching through the cache
+    min_dist = 1_000
+    # set a default random image from the cache in case nothing is found
+    min_thumb = random.choice(list(cache_dict.keys()))
+    threshold = 4
+    for k, v in cache_dict.items():
+        dist = color_distance(src_avg_RGB, v["RGB_avg"])
+        if dist < min_dist:
+            min_dist = dist
+            min_thumb = k
+        # stop searching if we found a close enough match
+        if min_dist <= threshold:
+            break
+
+    return min_thumb
