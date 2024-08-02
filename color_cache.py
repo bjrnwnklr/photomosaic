@@ -47,12 +47,13 @@ def main():
     cache = args.imagecache
     cache_path = pathlib.Path(cache)
     if not cache_path.exists():
-        print(f"Image cache file does not exist, starting a new one. {cache_path}")
+        print(f"Image cache file does not exist, starting a new one: {cache_path}")
         cache_dict = dict()
         cache_obj = {"store": cache_dict}
     else:
-        print(f"Loading cache from file: {cache}")
-        cache_obj = json.load(cache_path)
+        print(f"Loading cache from file: {cache_path}")
+        with open(cache_path, "r") as f_in:
+            cache_obj = json.load(f_in)
         cache_dict = cache_obj["store"]
 
     # process any images not yet in the cache dictionary
@@ -71,7 +72,7 @@ def main():
             im = Image.open(img_path)
             RGB_avg = avg_color(im)
             # store time the image was processed
-            processed_datetime = datetime.now()
+            processed_datetime = datetime.now().isoformat()
             cache_dict[img_name] = {"RGB_avg": RGB_avg, "processed": processed_datetime}
         else:
             # TODO: check if the image in the folder is newer than the processed

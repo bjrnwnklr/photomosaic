@@ -161,11 +161,11 @@ def create_thumbnail(im_path: pathlib.Path, size: int, folder: str):
     # create the thumbnail. This will create an image with the smallest
     # size as provided size
     # e.g. size = 300, image is 4000 x 3000, new image will be 400 x 300
-    thumb = ImageOps.cover(im, size)
+    thumb = ImageOps.cover(im, (size, size))
     # crop the image to the specified size in the middle of the provided image
     # new image will be 300 x 300, the previously longer side is cut to
     # 300 and centered in the previous 400 side (cut is from 50 to 350)
-    thumb = crop_image(thumb, size)
+    thumb = crop_image(thumb, (size, size))
     # save in folder with 'thumb' prefix
     img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
     print(f"Saving thumbnail {img_name}")
