@@ -5,6 +5,7 @@ import json
 from photomosaic import avg_color
 from PIL import Image
 from datetime import datetime
+from tqdm import tqdm
 
 
 def main():
@@ -61,7 +62,7 @@ def main():
     source_images = sorted(path.glob("*.jpg"))
     print(f"Found {len(source_images)} images in folder {path}")
     processed_images = 0
-    for src_img in source_images:
+    for src_img in tqdm(source_images):
         img_path = pathlib.Path(src_img)
         img_name = img_path.name
         if img_name not in cache_dict:

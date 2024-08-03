@@ -4,6 +4,7 @@ import pathlib
 import sys
 from photomosaic import img_to_squares, patch_image_from_files, find_color_neighbor
 import json
+from tqdm import tqdm
 
 
 def main():
@@ -32,7 +33,7 @@ def main():
     parser.add_argument(
         "-i",
         "--imagecache",
-        help="Name of the image cache JSON file",
+        help="Name of the image cache JSON file (located in the img_cache folder)",
         type=pathlib.Path,
         default="cache.json",
     )
@@ -50,9 +51,16 @@ def main():
 
     size = args.size
 
+    # check if image cache folder exists
+    folder = args.folder
+    folder_path = pathlib.Path(folder)
+    if not folder_path.exists():
+        print(f"Image cache folder does not exist: {folder_path}")
+        sys.exit(1)
+
     # check if image cache JSON file exists
     cache = args.imagecache
-    cache_path = pathlib.Path(cache)
+    cache_path = folder_path / pathlib.Path(cache)
     if not cache_path.exists():
         print(f"Image cache file does not exist: {cache_path}")
         sys.exit(1)
@@ -61,13 +69,6 @@ def main():
         with open(cache_path, "r") as f_in:
             cache_obj = json.load(f_in)
         cache_dict = cache_obj["store"]
-
-    # check if image cache folder exists
-    folder = args.folder
-    folder_path = pathlib.Path(folder)
-    if not folder_path.exists():
-        print(f"Image cache folder does not exist: {folder_path}")
-        sys.exit(1)
 
     # print image information
     im = Image.open(im_name)
@@ -78,8 +79,9 @@ def main():
 
     # Generate an updated list of squares with the thumbnails as squares.
     # process each square, get average color, retrieve nearest thumbnail from cache
+    print(f"Collecting thumbnails and finding nearest color matches from {cache}")
     thumb_squares = []
-    for row in squares:
+    for row in tqdm(squares):
         new_row = []
         for sq in row:
             # retrieve nearest image name with the closest color from cache

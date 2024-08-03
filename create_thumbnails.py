@@ -2,6 +2,7 @@ import argparse
 import pathlib
 import sys
 from photomosaic import create_thumbnail
+from tqdm import tqdm
 
 
 def main():
@@ -40,7 +41,7 @@ def main():
     print(f"Found {len(source_images)} images in folder {path}")
 
     folder = "img_cache"
-    for src_img in source_images:
+    for src_img in tqdm(source_images):
         create_thumbnail(pathlib.Path(src_img), size, folder)
 
 
