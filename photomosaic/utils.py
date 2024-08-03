@@ -163,16 +163,22 @@ def rotate_image(im: Image.Image) -> Image.Image:
     8 = Rotate 270 CW
     """
     # get rotation from EXIF
-    rotation = im.getexif()[274]
-    if rotation == 3:
-        angle = 180
-    elif rotation == 6:
-        angle = 270
-    elif rotation == 8:
-        angle = 90
+    exif = im.getexif()
+    if 274 in exif:
+        rotation = exif[274]
+        if rotation == 3:
+            angle = 180
+        elif rotation == 6:
+            angle = 270
+        elif rotation == 8:
+            angle = 90
+        else:
+            angle = 0
+        return im.rotate(angle=angle, expand=True)
     else:
-        angle = 0
-    return im.rotate(angle=angle, expand=True)
+        # no rotation data found in exif information,
+        # return the original image
+        return im
 
 
 def crop_image(im: Image.Image, size: int) -> Image.Image:

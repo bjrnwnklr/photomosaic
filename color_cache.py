@@ -36,7 +36,7 @@ def main():
 
     args = parser.parse_args()
 
-    # check if image exists, exit if not
+    # check if image cache folder exists, exit if not
     folder = args.folder
     path = pathlib.Path(folder)
     if not path.exists():
@@ -45,7 +45,7 @@ def main():
 
     # check if image cache JSON file exists
     cache = args.imagecache
-    cache_path = pathlib.Path(cache)
+    cache_path = path + pathlib.Path(cache)
     if not cache_path.exists():
         print(f"Image cache file does not exist, starting a new one: {cache_path}")
         cache_dict = dict()
