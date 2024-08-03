@@ -39,7 +39,7 @@ def main():
     pixelated_im = pixelate(im, size)
 
     # save new image
-    tmp_name = f"tmp/{path.stem}_pixelated_{size}{path.suffix}"
+    tmp_name = f"output/{path.stem}_pixelated_{size}{path.suffix}"
     print(f"Saving new image: {tmp_name}")
     pixelated_im.save(tmp_name)
 

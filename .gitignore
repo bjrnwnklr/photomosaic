@@ -1,8 +1,8 @@
 # secret files
 secrets.sh
 
-# tmp folder
-tmp/
+# output folder
+output/
 img_cache/
 cache.json
 

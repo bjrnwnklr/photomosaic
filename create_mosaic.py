@@ -98,7 +98,7 @@ def main():
     mosaic_im = patch_image_from_files(thumb_squares)
 
     # save new image
-    mosaic_name = f"tmp/{path.stem}_mosaic_{size}{path.suffix}"
+    mosaic_name = f"output/{path.stem}_mosaic_{size}{path.suffix}"
     print(f"Saving new image: {mosaic_name}")
     mosaic_im.save(mosaic_name)
 
