@@ -67,7 +67,7 @@ def main():
         img_name = img_path.name
         if img_name not in cache_dict:
             # image does not yet exist in cache
-            print(f"Image {img_name} not found in cache, processing.")
+            # print(f"Image {img_name} not found in cache, processing.")
             processed_images += 1
             # get average color of the image
             im = Image.open(img_path)

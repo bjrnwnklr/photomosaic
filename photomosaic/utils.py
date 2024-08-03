@@ -240,7 +240,7 @@ def create_thumbnail(im_path: pathlib.Path, size: int, folder: str):
     thumb = crop_image(thumb, (size, size))
     # save in folder with 'thumb' prefix
     img_name = f"{folder}/thump_{im_path.stem}{im_path.suffix}"
-    print(f"Saving thumbnail {img_name}")
+    # print(f"Saving thumbnail {img_name}")
     thumb.save(img_name)
 
 
