@@ -156,20 +156,21 @@ def pixelate_gif(
 ) -> list[Image.Image]:
     """Convenience function: Generate an animated GIF out of a sequence
     of pixelated images.
-    Start: % of the original image to be used as one square (default: 100)
-    end: % of the original image to be used as a square (default: 5)
-    steps: number of steps between start and end %
+    start: starting value of the pixels (i.e. largest value) (default: 500)
+    end: end value of the pixel size (i.e. smallest value) (default: 5)
+    steps: number of steps between start and end pixel sizes
 
     Example:
     start = 100, end = 20, steps = 4.
-    Images generated with 100, 80, 60, 40, 20 % of the image size as pixel squares.
+    Images generated with 100, 80, 60, 40, 20 pixel sizes.
     """
     gif = []
-    for pixel_size in range(start, end + 1, -1 * (start - end) // steps):
+    for pixel_size in list(range(start, end - 1, -1 * (start - end) // steps)) + [
+        end,
+    ]:
         # calculate size of the pixelation from largest side of the image
-        size = max(im.size) // pixel_size
-        print(f"Generating squares from original image, pixel size {size}")
-        squares = img_to_squares(im, size)
+        print(f"Generating squares from original image, pixel size {pixel_size}")
+        squares = img_to_squares(im, pixel_size)
         # generate a new image with the dimensions of the squares
         print("Generating avg color squares from original squares")
         new_squares = generate_avg_color_image(squares)

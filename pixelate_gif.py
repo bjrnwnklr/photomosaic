@@ -21,14 +21,14 @@ def main():
     parser.add_argument(
         "-s",
         "--start",
-        help="Starting percent of the image that is used to pixelate (100 = full image will be 1 pixel). Default: 100",
-        default=100,
+        help="Starting size of the pixels (i.e. largest value). Default: 500",
+        default=500,
         type=int,
     )
     parser.add_argument(
         "-e",
         "--end",
-        help="Final percent of the image size to be used as pixel size. Default: 5",
+        help="End size of the pixels (i.e. smallest value). Default: 5",
         default=5,
         type=int,
     )
@@ -68,7 +68,7 @@ def main():
         save_all=True,
         append_images=pixelated_im[1:],
         optimize=False,
-        duration=40,
+        duration=1000,
         loop=0,
     )
 
