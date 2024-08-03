@@ -151,6 +151,38 @@ def pixelate(im: Image.Image, size: int) -> Image.Image:
     return new_im
 
 
+def pixelate_gif(
+    im: Image.Image, start: int, end: int, steps: int
+) -> list[Image.Image]:
+    """Convenience function: Generate an animated GIF out of a sequence
+    of pixelated images.
+    Start: % of the original image to be used as one square (default: 100)
+    end: % of the original image to be used as a square (default: 5)
+    steps: number of steps between start and end %
+
+    Example:
+    start = 100, end = 20, steps = 4.
+    Images generated with 100, 80, 60, 40, 20 % of the image size as pixel squares.
+    """
+    gif = []
+    for pixel_size in range(start, end + 1, -1 * (start - end) // steps):
+        # calculate size of the pixelation from largest side of the image
+        size = max(im.size) // pixel_size
+        print(f"Generating squares from original image, pixel size {size}")
+        squares = img_to_squares(im, size)
+        # generate a new image with the dimensions of the squares
+        print("Generating avg color squares from original squares")
+        new_squares = generate_avg_color_image(squares)
+        print(f"New avg square, first square: {new_squares[0][0].size}")
+
+        # patch the new image together
+        print("Patching new image together from avg color squares")
+        new_im = patch_image_from_images(new_squares)
+        gif.append(new_im)
+
+    return gif
+
+
 def rotate_image(im: Image.Image) -> Image.Image:
     """Rotate an image according to the rotation stored in the images Exif data
     1 = Horizontal (normal)

@@ -6,4 +6,5 @@ from photomosaic.utils import (
     create_thumbnail,
     avg_color,
     find_color_neighbor,
+    pixelate_gif,
 )
