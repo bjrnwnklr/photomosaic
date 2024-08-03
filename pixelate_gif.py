@@ -21,14 +21,14 @@ def main():
     parser.add_argument(
         "-s",
         "--start",
-        help="Starting % of the image that is used to pixelate (100 = full image will be 1 pixel). Default: 100",
+        help="Starting percent of the image that is used to pixelate (100 = full image will be 1 pixel). Default: 100",
         default=100,
         type=int,
     )
     parser.add_argument(
         "-e",
         "--end",
-        help="Final % of the image size to be used as pixel size. Default: 5",
+        help="Final percent of the image size to be used as pixel size. Default: 5",
         default=5,
         type=int,
     )
@@ -61,11 +61,16 @@ def main():
     pixelated_im = pixelate_gif(im, start, end, steps)
 
     # save gif
-
-    # save new image
-    tmp_name = f"output/{path.stem}_pixelated_{size}{path.suffix}"
+    tmp_name = f"output/{path.stem}_pixelated_{start}_{end}_{steps}.gif"
     print(f"Saving new image: {tmp_name}")
-    pixelated_im.save(tmp_name)
+    pixelated_im[0].save(
+        tmp_name,
+        save_all=True,
+        append_images=pixelated_im[1:],
+        optimize=False,
+        duration=40,
+        loop=0,
+    )
 
 
 if __name__ == "__main__":
