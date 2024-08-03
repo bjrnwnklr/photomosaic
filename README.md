@@ -24,6 +24,22 @@ A simple photo mosaic generator, based on the ideas from [robertheaton.com - pro
               |--------|
     ```
 
+### Pixelated GIF
+
+Create a GIF that shows reverse pixelation, starting from a 1x1 pixel grid and moves to 50x50 pixels.
+
+Use the `Image.save()` option `append_images`:
+
+```python
+images[0].save('data/dst/pillow_imagedraw.gif',
+               save_all=True, append_images=images[1:], optimize=False, duration=40, loop=0)
+```
+
+# Image sources:
+
+-   [Butterfly Image Classification - Kaggle](https://www.kaggle.com/datasets/phucthaiv02/butterfly-image-classification)
+-   [Kaggle Image datasets](https://www.kaggle.com/datasets?search=image)
+
 # EXIF tags
 
 [EXIF Tags](https://exiftool.org/TagNames/EXIF.html)
