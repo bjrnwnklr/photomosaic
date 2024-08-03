@@ -45,7 +45,7 @@ def main():
 
     # check if image cache JSON file exists
     cache = args.imagecache
-    cache_path = path + pathlib.Path(cache)
+    cache_path = path / pathlib.Path(cache)
     if not cache_path.exists():
         print(f"Image cache file does not exist, starting a new one: {cache_path}")
         cache_dict = dict()
